@@ -37,8 +37,9 @@ jobs:
           
           **Direct Links:**
           - [Naming Conventions](https://github.com/antoleandarius/dotnet-guidelines-poc/blob/main/naming.md)
+          - [Documentation Standards](https://github.com/antoleandarius/dotnet-guidelines-poc/blob/main/documentation.md)
           
-          > **Note:** All code changes must comply with the guidelines linked above.
+          > **Note:** All code changes must comply with ALL guidelines linked above.
 
           ---
 
