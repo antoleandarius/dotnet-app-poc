@@ -18,8 +18,8 @@ jobs:
 
       - name: Download naming guidelines
         run: |
-          # Replace <ORG>, <CONFIG_REPO>, and <PATH> with your values
-          curl -s https://raw.githubusercontent.com/<ORG>/<CONFIG_REPO>/main/naming.md -o naming.md
+          # Fetch naming guidelines from the guidelines repository
+          curl -s https://raw.githubusercontent.com/antoleandarius/dotnet-guidelines-poc/main/naming.md -o naming.md
           
       - name: Prepare PR comment with guidelines
         run: |
