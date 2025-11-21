@@ -1,0 +1,55 @@
+name: Create Copilot Coding Task
+
+on:
+  workflow_dispatch:
+    inputs:
+      task_description:
+        description: 'What should Copilot build/fix?'
+        required: true
+        default: 'Refactor Sample.cs methods to use PascalCase naming convention'
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  create-task:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Fetch coding guidelines
+        id: guidelines
+        run: |
+          GUIDELINES=$(curl -s https://raw.githubusercontent.com/antoleandarius/dotnet-guidelines-poc/main/naming.md)
+          echo "guidelines<<EOF" >> $GITHUB_OUTPUT
+          echo "$GUIDELINES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Issue for Copilot
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create \
+            --repo ${{ github.repository }} \
+            --title "Copilot Task: ${{ inputs.task_description }}" \
+            --label "copilot-workspace" \
+            --body "## 🤖 Automated Coding Task
+
+          ### Task Description
+          ${{ inputs.task_description }}
+
+          ---
+
+          ### 📋 Coding Guidelines to Follow
+          
+          ${{ steps.guidelines.outputs.guidelines }}
+
+          ---
+
+          ### Instructions for GitHub Copilot
+          - Implement the changes described above
+          - Follow all naming conventions strictly
+          - Ensure methods use PascalCase
+          - Create a PR when complete
+
+          @copilot please implement this task following the guidelines above."
