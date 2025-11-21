@@ -1,0 +1,39 @@
+name: Context Injection POC
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  inject-guidelines:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download naming guidelines
+        run: |
+          # Replace <ORG>, <CONFIG_REPO>, and <PATH> with your values
+          curl -s https://raw.githubusercontent.com/<ORG>/<CONFIG_REPO>/main/naming.md -o naming.md
+          
+      - name: Prepare PR comment with guidelines
+        run: |
+          echo "### 🔍 Code Review Rules for Copilot" > body.txt
+          echo "" >> body.txt
+          echo "The following naming guidelines must be followed:" >> body.txt
+          echo "" >> body.txt
+          cat naming.md >> body.txt
+          echo "" >> body.txt
+          echo "---" >> body.txt
+          echo "*These rules are automatically fetched from the guidelines repository and will be enforced by GitHub Copilot Code Review.*" >> body.txt
+
+      - name: Post guidelines to PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} --body-file body.txt
