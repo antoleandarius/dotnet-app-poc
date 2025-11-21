@@ -15,5 +15,11 @@ namespace DotNetAppPoc
         {
             Console.WriteLine("also bad naming");
         }
+
+        // Yet another lowercase method - testing Copilot review
+        public void process()
+        {
+            Console.WriteLine("another violation");
+        }
     }
 }
