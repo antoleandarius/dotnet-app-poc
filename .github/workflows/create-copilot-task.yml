@@ -18,22 +18,15 @@ jobs:
     
     steps:
       - name: Fetch coding guidelines
-        id: guidelines
         run: |
-          GUIDELINES=$(curl -s https://raw.githubusercontent.com/antoleandarius/dotnet-guidelines-poc/main/naming.md)
-          echo "guidelines<<EOF" >> $GITHUB_OUTPUT
-          echo "$GUIDELINES" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          curl -s https://raw.githubusercontent.com/antoleandarius/dotnet-guidelines-poc/main/naming.md -o guidelines.md
 
       - name: Create GitHub Issue for Copilot
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh issue create \
-            --repo ${{ github.repository }} \
-            --title "Copilot Task: ${{ inputs.task_description }}" \
-            --label "copilot-workspace" \
-            --body "## 🤖 Automated Coding Task
+          cat > issue-body.md << 'ISSUE_EOF'
+          ## 🤖 Automated Coding Task
 
           ### Task Description
           ${{ inputs.task_description }}
@@ -42,7 +35,11 @@ jobs:
 
           ### 📋 Coding Guidelines to Follow
           
-          ${{ steps.guidelines.outputs.guidelines }}
+          ISSUE_EOF
+          
+          cat guidelines.md >> issue-body.md
+          
+          cat >> issue-body.md << 'ISSUE_EOF'
 
           ---
 
@@ -52,4 +49,10 @@ jobs:
           - Ensure methods use PascalCase
           - Create a PR when complete
 
-          @copilot please implement this task following the guidelines above."
+          @copilot please implement this task following the guidelines above.
+          ISSUE_EOF
+          
+          gh issue create \
+            --repo ${{ github.repository }} \
+            --title "Copilot Task: ${{ inputs.task_description }}" \
+            --body-file issue-body.md
