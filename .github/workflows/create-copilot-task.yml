@@ -17,10 +17,6 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Fetch coding guidelines
-        run: |
-          curl -s https://raw.githubusercontent.com/antoleandarius/dotnet-guidelines-poc/main/naming.md -o guidelines.md
-
       - name: Create GitHub Issue for Copilot
         env:
           GH_TOKEN: ${{ github.token }}
@@ -34,22 +30,26 @@ jobs:
           ---
 
           ### 📋 Coding Guidelines to Follow
+
+          Please review and follow the coding guidelines available at:
           
-          ISSUE_EOF
+          **Guidelines Repository:** https://github.com/antoleandarius/dotnet-guidelines-poc
           
-          cat guidelines.md >> issue-body.md
+          **Direct Links:**
+          - [Naming Conventions](https://github.com/antoleandarius/dotnet-guidelines-poc/blob/main/naming.md)
           
-          cat >> issue-body.md << 'ISSUE_EOF'
+          > **Note:** All code changes must comply with the guidelines linked above.
 
           ---
 
           ### Instructions for GitHub Copilot
-          - Implement the changes described above
-          - Follow all naming conventions strictly
-          - Ensure methods use PascalCase
+          - Review the guidelines at the links above
+          - Implement the changes described in the task
+          - Follow all naming conventions strictly (PascalCase for methods)
+          - Ensure all code complies with the documented standards
           - Create a PR when complete
 
-          @copilot please implement this task following the guidelines above.
+          @copilot please implement this task following the guidelines linked above.
           ISSUE_EOF
           
           gh issue create \
