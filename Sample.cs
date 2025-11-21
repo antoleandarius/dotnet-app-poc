@@ -24,6 +24,11 @@ namespace DotNetAppPoc
         /// <returns>The final price after applying the discount</returns>
         public decimal CalculateDiscount(decimal originalPrice, decimal discountPercentage)
         {
+            if (originalPrice < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(originalPrice), "Original price cannot be negative");
+            }
+
             if (discountPercentage < 0 || discountPercentage > 100)
             {
                 throw new ArgumentOutOfRangeException(nameof(discountPercentage), "Discount percentage must be between 0 and 100");
