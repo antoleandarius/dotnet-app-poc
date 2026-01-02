@@ -19,3 +19,7 @@ The `Sample.cs` file contains lowercase method names (`test()`, `calculate()`) w
 dotnet build
 dotnet run
 ```
+
+## Additional Documentation
+
+- [Fabric MCP Server Tools](FABRIC_MCP_SERVER_TOOLS.md) - List of available tools for Jira and Xray integration
