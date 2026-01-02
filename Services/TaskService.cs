@@ -33,10 +33,15 @@ namespace DotNetAppPoc.Services
                 tasks = tasks.Where(t => t.Site != null && t.Site.Equals(site, StringComparison.OrdinalIgnoreCase));
             }
 
-            // Group by status and count
-            var result = tasks
-                .GroupBy(t => t.Status.ToString())
-                .ToDictionary(g => g.Key, g => g.Count());
+            // Initialize result with all possible status values set to 0
+            var result = Enum.GetValues<TaskStatus>()
+                .ToDictionary(status => status.ToString(), status => 0);
+
+            // Update counts for statuses that have tasks
+            foreach (var group in tasks.GroupBy(t => t.Status))
+            {
+                result[group.Key.ToString()] = group.Count();
+            }
 
             return result;
         }
