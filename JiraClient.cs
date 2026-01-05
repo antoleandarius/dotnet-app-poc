@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace DotNetAppPoc
 {
-    public class JiraClient
+    public class JiraClient : IDisposable
     {
+        private const string DataPrefix = "data: ";
         private readonly string _mcpApiUrl;
         private readonly HttpClient _httpClient;
+        private bool _disposed = false;
 
         public JiraClient(string mcpApiUrl)
         {
@@ -53,9 +55,9 @@ namespace DotNetAppPoc
                     var lines = responseContent.Split('\n');
                     foreach (var line in lines)
                     {
-                        if (line.StartsWith("data: "))
+                        if (line.StartsWith(DataPrefix))
                         {
-                            var jsonData = line.Substring(6); // Remove "data: " prefix
+                            var jsonData = line.Substring(DataPrefix.Length);
                             return JsonDocument.Parse(jsonData);
                         }
                     }
@@ -71,7 +73,20 @@ namespace DotNetAppPoc
 
         public void Dispose()
         {
-            _httpClient?.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _httpClient?.Dispose();
+                }
+                _disposed = true;
+            }
         }
     }
 }

@@ -129,11 +129,7 @@ namespace DotNetAppPoc
             
             if (issue.TryGetProperty("priority", out var priority))
             {
-                if (priority.ValueKind == JsonValueKind.Null)
-                {
-                    // Priority is null
-                }
-                else if (priority.ValueKind == JsonValueKind.String)
+                if (priority.ValueKind == JsonValueKind.String)
                 {
                     Console.WriteLine($"Priority: {priority.GetString()}");
                 }
@@ -141,6 +137,7 @@ namespace DotNetAppPoc
                 {
                     Console.WriteLine($"Priority: {priorityName.GetString()}");
                 }
+                // If priority is null, we don't display it
             }
 
             if (issue.TryGetProperty("description", out var description))
