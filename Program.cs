@@ -20,7 +20,7 @@ namespace DotNetAppPoc
             }
 
             // Fetch JIRA ticket IA114245-60
-            var fetcher = new JiraTicketFetcher(mcpApiUrl);
+            using var fetcher = new JiraTicketFetcher(mcpApiUrl);
             var ticket = await fetcher.FetchTicketAsync("IA114245-60");
             
             if (ticket != null)

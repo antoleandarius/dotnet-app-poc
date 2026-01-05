@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace DotNetAppPoc
 {
-    public class JiraTicketFetcher
+    public class JiraTicketFetcher : IDisposable
     {
         private readonly string _mcpApiUrl;
         private readonly HttpClient _httpClient;
+        private bool _disposed = false;
 
         public JiraTicketFetcher(string mcpApiUrl)
         {
@@ -151,6 +152,24 @@ namespace DotNetAppPoc
             }
             
             return textBuilder.ToString().Trim();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _httpClient?.Dispose();
+                }
+                _disposed = true;
+            }
         }
     }
 
