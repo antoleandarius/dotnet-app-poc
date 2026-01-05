@@ -56,8 +56,8 @@ namespace DotNetAppPoc
 
                 var responseBody = await response.Content.ReadAsStringAsync();
                 
-                // Parse the SSE response format - handle different line ending formats
-                var lines = responseBody.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                // Parse the SSE response format - handle all line ending formats
+                var lines = responseBody.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
                 string? dataLine = null;
                 foreach (var line in lines)
                 {
@@ -184,12 +184,12 @@ namespace DotNetAppPoc
 
     public class JiraTicketDetails
     {
-        public string Key { get; set; } = string.Empty;
-        public string Summary { get; set; } = string.Empty;
-        public string Status { get; set; } = string.Empty;
-        public string Assignee { get; set; } = string.Empty;
-        public string Priority { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
+        public string Key { get; init; } = string.Empty;
+        public string Summary { get; init; } = string.Empty;
+        public string Status { get; init; } = string.Empty;
+        public string Assignee { get; init; } = string.Empty;
+        public string Priority { get; init; } = string.Empty;
+        public string Description { get; init; } = string.Empty;
 
         public void Display()
         {
