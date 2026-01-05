@@ -20,6 +20,11 @@ namespace DotNetAppPoc
 
         public async Task<JiraTicketDetails?> FetchTicketAsync(string issueKey)
         {
+            if (string.IsNullOrWhiteSpace(issueKey))
+            {
+                throw new ArgumentException("Issue key cannot be null or empty.", nameof(issueKey));
+            }
+
             try
             {
                 var requestBody = new
@@ -51,14 +56,14 @@ namespace DotNetAppPoc
 
                 var responseBody = await response.Content.ReadAsStringAsync();
                 
-                // Parse the SSE response format
-                var lines = responseBody.Split('\n');
+                // Parse the SSE response format - handle different line ending formats
+                var lines = responseBody.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
                 string? dataLine = null;
                 foreach (var line in lines)
                 {
                     if (line.StartsWith("data:"))
                     {
-                        dataLine = line.Substring(5).Trim();
+                        dataLine = line[5..].Trim();
                         break;
                     }
                 }
@@ -76,11 +81,15 @@ namespace DotNetAppPoc
                     result.TryGetProperty("content", out var contentArray) &&
                     contentArray.GetArrayLength() > 0)
                 {
-                    var contentText = contentArray[0].GetProperty("text").GetString();
-                    if (contentText != null)
+                    var firstContent = contentArray[0];
+                    if (firstContent.TryGetProperty("text", out var textProperty))
                     {
-                        using var ticketDoc = JsonDocument.Parse(contentText);
-                        return ParseJiraTicket(ticketDoc.RootElement);
+                        var contentText = textProperty.GetString();
+                        if (contentText != null)
+                        {
+                            using var ticketDoc = JsonDocument.Parse(contentText);
+                            return ParseJiraTicket(ticketDoc.RootElement);
+                        }
                     }
                 }
 
